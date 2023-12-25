@@ -773,7 +773,7 @@ public class TrangChu extends javax.swing.JFrame {
                     //
                     System.out.println("Sửa thành công!");
                     readExcelFile(txtChonFile.getText(), 0, newMaLop);
-                    System.out.println(newMaLop);
+                   // System.out.println(newMaLop);
                     suaLop.getListSV().clear();
                     
                     themSinhVienVaoLop(suaLop);
