@@ -484,7 +484,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
     public void chiatrucnhat(String classID) {
 
         Date ngay = findClassByID(classID).getNgayBD();
-        System.out.println(ngay);
+        //System.out.println(ngay);
         String luuy = "";
         ArrayList<SinhVien> listsv = findClassByID(classID).getListSV();
 
@@ -766,7 +766,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
                 JFrame jFrame = new ChiTietQLTN();
                 jFrame.setVisible(true);
                 jFrame.getContentPane().setBackground(Color.WHITE);
-
+                jFrame.setLocationRelativeTo(null);
             }
         });
     }

@@ -187,7 +187,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
                                 Object newValue = trucnhat.getValueAt(row, column);
                                 // Cập nhật dữ liệu vào mô hình (EditableTableModel) hoặc thực hiện hành động cần thiết
                                 model.setValueAt(newValue, row, column);
-                                System.out.println("Updated value: " + newValue);
+                               // System.out.println("Updated value: " + newValue);
                             }
                         });
                     } catch (Exception ex) {
@@ -243,7 +243,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
             for (SinhVien sv : findClassByID(classID).getListSV()) {
                 if (sv.getHoTen().toLowerCase().contains(TimKiem) || sv.getMaSV().toLowerCase().contains(TimKiem)) {
                     listSinhVienTrucNhat.add(sv);
-                    System.out.println(sv);
+                    //System.out.println(sv);
                 }
             }
 
@@ -342,7 +342,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
                                 Object newValue = trucnhat.getValueAt(row, column);
                                 // Cập nhật dữ liệu vào mô hình (EditableTableModel) hoặc thực hiện hành động cần thiết
                                 model.setValueAt(newValue, row, column);
-                                System.out.println("Updated value: " + newValue);
+                               // System.out.println("Updated value: " + newValue);
                             }
                         });
                     } catch (Exception ex) {
@@ -720,6 +720,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
                 JFrame setChiTiet = new Them_Sua_ChiTiet();
                 setChiTiet.setVisible(true);
                 setChiTiet.getContentPane().setBackground(Color.white);
+                setChiTiet.setLocationRelativeTo(null);
             }
         });
     }

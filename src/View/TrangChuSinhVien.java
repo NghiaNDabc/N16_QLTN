@@ -396,6 +396,7 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
 
                 trangChu.setVisible(true);
                 trangChu.getContentPane().setBackground(Color.white);
+                trangChu.setLocationRelativeTo(null);
             }
         });
     }
