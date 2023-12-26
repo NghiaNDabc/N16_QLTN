@@ -5,11 +5,12 @@
 package Models;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
-public class Lop {
+public class Lop implements Serializable {
 
     private String maLop;
     private String tenLop;

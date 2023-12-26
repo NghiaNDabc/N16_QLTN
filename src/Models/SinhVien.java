@@ -4,10 +4,11 @@
  */
 package Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class SinhVien {
+public class SinhVien implements Serializable{
 
     private String maSV;
     private String hoTen;

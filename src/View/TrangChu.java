@@ -3,7 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package View;
-
+import Models.FileTXT.FileListSinhVien;
+import Models.FileTXT.FileListLop;
 import javax.swing.table.DefaultTableModel;
 import Models.Lop;
 import Models.SinhVien;
@@ -57,29 +58,70 @@ import javax.swing.ImageIcon;
  * @author HP
  */
 public class TrangChu extends javax.swing.JFrame {
-
+ ArrayList<SinhVien> listTatCaSinhVien = new ArrayList<>();
+    
+    DataSingleton dataSingleton = DataSingleton.getInstance();
+    
+    ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
+    
+    FileListSinhVien fileListTatCaSv = new FileListSinhVien();
+    FileListLop fileListLop = new FileListLop();
+    String data_listTatCaSinhVien =  "CSDL_txt\\data_listTatCaSinhVien.txt";
+    String data_listLop =  "CSDL_txt\\data_listLop.txt";
     /**
      * Creates new form NewJFrameDAD
      */
     public TrangChu() {
         initComponents();
-        if (listLop.isEmpty()) {
-            synchronized (listTatCaSinhVien) {
-                fakeData();
-            }
-            
+        
+        readListTatCaSinhVien();
+        readListLop();
+        if (listLop.isEmpty() && listTatCaSinhVien.isEmpty()) {
+                fakeData();  
         }
         loadTableTrangChu();
         myInit();
         clickdetail();
     }
     
-    ArrayList<SinhVien> listTatCaSinhVien = new ArrayList<>();
+   
     
-    DataSingleton dataSingleton = DataSingleton.getInstance();
     
-    ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
-
+    public void writeListTatCaSinhVien(){
+        try {
+            fileListTatCaSv.WriteObject(data_listTatCaSinhVien, listTatCaSinhVien);
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(TrangChu.this, "Lỗi ghi tất cả sinh viên!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+     public void readListTatCaSinhVien(){
+        try {
+            this.listTatCaSinhVien = fileListTatCaSv.ReadObject(data_listTatCaSinhVien);
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(TrangChu.this, "Lỗi đọc listTatCaSinhVien!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+     
+     public void writeListLop(){
+        try {
+            fileListLop.WriteObject(data_listLop, listLop);
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(TrangChu.this, "Lỗi ghi listLop!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+     public void readListLop(){
+        try {
+            this.listLop = fileListLop.ReadObject(data_listLop);
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(TrangChu.this, "Lỗi đọc listLop!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -686,6 +728,8 @@ public class TrangChu extends javax.swing.JFrame {
         listLop.add(newLop3);
         listLop.add(newLop4);
         listLop.add(newLop5);
+        writeListLop();
+        writeListTatCaSinhVien();
         
     }
     
@@ -726,6 +770,9 @@ public class TrangChu extends javax.swing.JFrame {
                 listLop.add(newLop);
                 
                 loadTableTrangChu();
+                
+                writeListTatCaSinhVien();
+                writeListLop();
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(TrangChu.this, e.getMessage(), "Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -797,7 +844,8 @@ public class TrangChu extends javax.swing.JFrame {
                     }
                 }
                
-               
+               writeListTatCaSinhVien();
+                writeListLop();
                 JOptionPane.showMessageDialog(
                         TrangChu.this, "Sửa thành công!", "Thông báo", JOptionPane.PLAIN_MESSAGE);
                 loadTableTrangChu();
@@ -834,6 +882,8 @@ public class TrangChu extends javax.swing.JFrame {
                 String selectedMaLop = tblLopTrucNhat.getValueAt(tblLopTrucNhat.getSelectedRow(), 0).toString();
                 listLop.removeIf(lop -> lop.getMaLop().equals(selectedMaLop));
                 xoaSVTheoMaLop(selectedMaLop);
+                writeListTatCaSinhVien();
+                writeListLop();
                 JOptionPane.showMessageDialog(TrangChu.this, "Thành công!", "Thông báo", JOptionPane.PLAIN_MESSAGE);
                 loadTableTrangChu();
             }

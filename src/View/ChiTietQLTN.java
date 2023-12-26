@@ -18,6 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import View.ChiTietQLTN;
 import Controller.DataSingleton;
 import Controller.TableTrangChu;
+import Models.FileTXT.FileListLop;
 import View.DangNhap;
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -45,14 +46,29 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ChiTietQLTN extends javax.swing.JFrame {
 
-    public ChiTietQLTN() {
-
+    ArrayList<Lop> listLop = new ArrayList<>();
+    FileListLop fileListLop = new FileListLop();
+    String data_listLop = "CSDL_txt\\data_listLop.txt";
+ 
+    
+    //hàm này lấy listLop từ txt, m làm hàm ghi tất cả trực nhật vào txt rồi sang trang sinh viên đọc txt là xong
+    // nhớ implemt
+    void readListLop() {
+        try {
+            this.listLop = fileListLop.ReadObject(data_listLop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+    
     DataSingleton dataSingleton = DataSingleton.getInstance();
-    ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
     ArrayList<TrucNhat>[] allTrucNhatArrays = dataSingleton.getAllDanhSachTrucNhatArray();
     ArrayList<TrucNhat> listtrucnhat;
     TableChiTiet model;
+
+    public ChiTietQLTN() {
+
+    }
 
     public ChiTietQLTN(String classID, int selectedRow, TrangChu This) {
         initComponents();
@@ -72,6 +88,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
             }
         });
+        readListLop();
         xoa(classID);
         SuaChiTiet(classID, selectedRow);
         Sua();
@@ -652,7 +669,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
             tn.setLuuY(luuYField.getText());
             model.fireTableDataChanged(); // Cập nhật toàn bộ bảng
-             JOptionPane.showMessageDialog(ChiTietQLTN.this, "Sửa thành công!");
+            JOptionPane.showMessageDialog(ChiTietQLTN.this, "Sửa thành công!");
         }
     }
 
@@ -764,10 +781,10 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
     private void xuatFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xuatFileActionPerformed
         // TODO add your handling code here:
-             try (Workbook workbook = new XSSFWorkbook()) {
+        try (Workbook workbook = new XSSFWorkbook()) {
             // Tạo một trang tính mới
             Sheet sheet = workbook.createSheet("Danh sách trực nhật");
-  Row headerRow = sheet.createRow(0);
+            Row headerRow = sheet.createRow(0);
             headerRow.createCell(0).setCellValue("Buổi");
             headerRow.createCell(1).setCellValue("Ngày");
             headerRow.createCell(2).setCellValue("Sinh vien truc nhat");
@@ -781,17 +798,17 @@ public class ChiTietQLTN extends javax.swing.JFrame {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(tn.getBuoi());
                 row.createCell(1).setCellValue(tn.display(tn.getNgayTN()));
-                                ArrayList<SinhVien> studentList = tn.getListSV();
-               
-                    row.createCell( 2).setCellValue(model.buildStudentString(studentList));
-                
+                ArrayList<SinhVien> studentList = tn.getListSV();
+
+                row.createCell(2).setCellValue(model.buildStudentString(studentList));
+
                 row.createCell(3).setCellValue(tn.getLuuY());
                 // Ghi danh sách sinh viên vào các ô từ cột 2 trở đi
 
             }
-            
-             JFileChooser fileChooser = new JFileChooser();
-               FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Workbook (.xlsx)", "xlsx");
+
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Workbook (.xlsx)", "xlsx");
             fileChooser.setFileFilter(filter);
             fileChooser.setDialogTitle("Chọn vị trí lưu trữ");
 
@@ -806,21 +823,19 @@ public class ChiTietQLTN extends javax.swing.JFrame {
                 if (!filePath.endsWith(".xlsx")) {
                     filePath += ".xlsx";
                 }
-            
-            
-           
-            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
-                workbook.write(outputStream);
-                System.out.println("Xuất Excel thành công!");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
+                try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                    workbook.write(outputStream);
+                    System.out.println("Xuất Excel thành công!");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    
+
     }//GEN-LAST:event_xuatFileActionPerformed
 
     public static void main(String args[]) {

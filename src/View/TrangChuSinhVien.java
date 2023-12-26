@@ -14,6 +14,7 @@ import Controller.MultiLineTableCellRenderer;
 import Controller.TableChiTiet;
 import Controller.TableTrangChu;
 import Controller.TableTrangChu1;
+import Models.FileTXT.FileListLop;
 import View.DangNhap;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -71,18 +72,30 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
     public TrangChuSinhVien(String MaSV) {
         initComponents();
         loadTableTrangChu(MaSV);
+        //lấy listLop
+        readListLop();
     }
 
     public TrangChuSinhVien() {
 
     }
-
+    ArrayList<Lop> listLop = new ArrayList<>();
+    FileListLop fileListLop = new FileListLop();
+    String data_listLop = "CSDL_txt\\data_listLop.txt";
     DataSingleton dataSingleton = DataSingleton.getInstance();
-    ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
+   // ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
     ArrayList<TrucNhat>[] allTN = dataSingleton.getAllDanhSachTrucNhatArray();
     ArrayList<SinhVienLop> newList = new ArrayList<SinhVienLop>();
     TableTrangChu1 model;
 
+    
+    void readListLop() {
+        try {
+            this.listLop = fileListLop.ReadObject(data_listLop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
