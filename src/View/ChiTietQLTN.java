@@ -26,13 +26,22 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ChiTietQLTN extends javax.swing.JFrame {
 
@@ -105,6 +114,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
         LaBel_QLTN = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         btnDangXuat = new javax.swing.JButton();
+        xuatFile = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         btnXoa = new javax.swing.JButton();
         btntrove = new javax.swing.JButton();
@@ -340,18 +350,34 @@ public class ChiTietQLTN extends javax.swing.JFrame {
             }
         });
 
+        xuatFile.setBackground(new java.awt.Color(0, 102, 0));
+        xuatFile.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        xuatFile.setForeground(new java.awt.Color(255, 255, 255));
+        xuatFile.setText("Xuất File");
+        xuatFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xuatFileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(xuatFile)
+                .addGap(40, 40, 40)
                 .addComponent(btnDangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btnDangXuat, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(xuatFile, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                    .addComponent(btnDangXuat)))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -736,6 +762,67 @@ public class ChiTietQLTN extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnChiaActionPerformed
 
+    private void xuatFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xuatFileActionPerformed
+        // TODO add your handling code here:
+             try (Workbook workbook = new XSSFWorkbook()) {
+            // Tạo một trang tính mới
+            Sheet sheet = workbook.createSheet("Danh sách trực nhật");
+  Row headerRow = sheet.createRow(0);
+            headerRow.createCell(0).setCellValue("Buổi");
+            headerRow.createCell(1).setCellValue("Ngày");
+            headerRow.createCell(2).setCellValue("Sinh vien truc nhat");
+            headerRow.createCell(3).setCellValue("Luu y");
+            sheet.autoSizeColumn(3);
+            // Dòng bắt đầu từ 0, ô bắt đầu từ 0
+            int rowNum = 1;
+
+            // Duyệt qua danh sách ShiftData và ghi dữ liệu vào tệp Excel
+            for (TrucNhat tn : listtrucnhat) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(tn.getBuoi());
+                row.createCell(1).setCellValue(tn.display(tn.getNgayTN()));
+                                ArrayList<SinhVien> studentList = tn.getListSV();
+               
+                    row.createCell( 2).setCellValue(model.buildStudentString(studentList));
+                
+                row.createCell(3).setCellValue(tn.getLuuY());
+                // Ghi danh sách sinh viên vào các ô từ cột 2 trở đi
+
+            }
+            
+             JFileChooser fileChooser = new JFileChooser();
+               FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Workbook (.xlsx)", "xlsx");
+            fileChooser.setFileFilter(filter);
+            fileChooser.setDialogTitle("Chọn vị trí lưu trữ");
+
+            // Hiển thị hộp thoại và kiểm tra nếu người dùng chọn OK
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                // Lấy đường dẫn mà người dùng đã chọn
+                File selectedFile = fileChooser.getSelectedFile();
+
+                // Thêm đuôi .xlsx nếu chưa có
+                String filePath = selectedFile.getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+            
+            
+           
+            try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                workbook.write(outputStream);
+                System.out.println("Xuất Excel thành công!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+    }//GEN-LAST:event_xuatFileActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -795,5 +882,6 @@ public class ChiTietQLTN extends javax.swing.JFrame {
     private javax.swing.JLabel txtMaLop;
     private javax.swing.JTextField txtNgay;
     private javax.swing.JLabel txtTenLop;
+    private javax.swing.JButton xuatFile;
     // End of variables declaration//GEN-END:variables
 }
