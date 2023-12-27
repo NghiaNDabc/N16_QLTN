@@ -576,6 +576,11 @@ ArrayList<TrucNhat> list = new ArrayList<>();
             // Nếu số sinh viên trong buổi > 5, chỉ lấy 5 người đầu tiên
             if (list1buoi.size() > 5) {
                 list1buoi = new ArrayList<>(list1buoi.subList(0, 5));
+                
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Số lượng sinh viên quá ít", "Thông báo", JOptionPane.ERROR_MESSAGE);
+                return;
             }
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(ngay);

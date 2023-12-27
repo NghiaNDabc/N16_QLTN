@@ -11,7 +11,7 @@ import java.util.Objects;
  *
  * @author pc
  */
-public class SinhVienLop implements Serializable {
+public class TrucNhatLop implements Serializable {
     private TrucNhat tn;
     private String Tenlop;
     private String Malop;
@@ -24,7 +24,7 @@ public class SinhVienLop implements Serializable {
         this.Malop = Malop;
     }
 
-    public SinhVienLop(TrucNhat tn, String Tenlop, String Malop) {
+    public TrucNhatLop(TrucNhat tn, String Tenlop, String Malop) {
         this.tn = tn;
         this.Tenlop = Tenlop;
         this.Malop = Malop;
@@ -38,7 +38,7 @@ public class SinhVienLop implements Serializable {
         this.tn = tn;
     }
 
-    public SinhVienLop(TrucNhat tn, String Tenlop) {
+    public TrucNhatLop(TrucNhat tn, String Tenlop) {
         this.tn = tn;
         this.Tenlop = Tenlop;
     }
@@ -68,7 +68,7 @@ public class SinhVienLop implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final SinhVienLop other = (SinhVienLop) obj;
+        final TrucNhatLop other = (TrucNhatLop) obj;
         return Objects.equals(this.Tenlop, other.getTenlop());
     }
     

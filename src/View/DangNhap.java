@@ -187,12 +187,10 @@ ArrayList<Account> list = new ArrayList<Account>();
         Account a2 = new Account("2021602720", "123");
         Account a3 = new Account("2021608013", "123");
         Account a4 = new Account("2020605626", "123");
-   Account a5 = new Account("2021603611", "123");
         list.add(a1);
         list.add(a2);
         list.add(a3);
         list.add(a4);
-        list.add(a5);
 
     }
     private void txtMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMatKhauActionPerformed
@@ -214,7 +212,7 @@ ArrayList<Account> list = new ArrayList<Account>();
             int i = 0;
 
             if (tenDN.isEmpty() || matKhau.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không được để trống");
+                throw new Exception("Tài khoản hoặc mật khẩu không được để trống");
             } else {
                 for (Account account : list) {
                     if (account.getPassword().equals(matKhau) && account.getMasv().equals(tenDN)) {
@@ -232,13 +230,11 @@ ArrayList<Account> list = new ArrayList<Account>();
                     }
                 }
                 if (i == 0) {
-                    JOptionPane.showMessageDialog(null, "Tài khoản hoặc mật khẩu không chính xác");
+                    throw new Exception("Tài khoản hoặc mật khẩu không chính xác");
                 }
             }
         } catch (Exception ex) {
-            // Xử lý ngoại lệ ở đây, ví dụ:
-            ex.printStackTrace(); // In thông tin ngoại lệ vào console
-            JOptionPane.showMessageDialog(null, "Đã xảy ra lỗi: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Thông báo", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnDangNhapActionPerformed
     private void myInit() {

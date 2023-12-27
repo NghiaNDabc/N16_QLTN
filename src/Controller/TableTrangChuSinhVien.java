@@ -6,7 +6,7 @@ package Controller;
 
 import Models.Lop;
 import Models.SinhVien;
-import Models.SinhVienLop;
+import Models.TrucNhatLop;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,11 +17,11 @@ import javax.swing.table.AbstractTableModel;
  * @author HP
  */
 
-public class TableTrangChu1 extends AbstractTableModel{
-    private String name[]={"Tên lớp", "Ngày trực nhật", "Buổi","Sinh viên trực nhật" ,"Lưu ý"};
+public class TableTrangChuSinhVien extends AbstractTableModel{
+    private String name[]={"Mã lớp","Tên lớp", "Ngày trực nhật","Sinh viên trực nhật", "Buổi" ,"Lưu ý"};
      
     //Tạo một đối tượng arrayList có tên dsSV.
-    ArrayList<SinhVienLop> dsLop=new ArrayList<SinhVienLop>();
+    ArrayList<TrucNhatLop> dsLop=new ArrayList<TrucNhatLop>();
 
     public String buildStudentString(ArrayList<SinhVien> studentList) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -57,7 +57,7 @@ public class TableTrangChu1 extends AbstractTableModel{
         String ngayOutput = sdfOutput.format(ngay);
       return ngayOutput;
     }
-    public TableTrangChu1(ArrayList<SinhVienLop> ds) {
+    public TableTrangChuSinhVien(ArrayList<TrucNhatLop> ds) {
         dsLop=ds;
     }
     @Override
@@ -75,11 +75,13 @@ public class TableTrangChu1 extends AbstractTableModel{
         switch(columnIndex)
         {
 //            Cột mã
-            case 0: return dsLop.get(rowIndex).getTenlop(); 
-            case 1: return display(dsLop.get(rowIndex).getTn().getNgayTN()); 
-            case 2: return dsLop.get(rowIndex).getTn().getBuoi(); 
-            case 3: return buildStudentString(dsLop.get(rowIndex).getTn().getListSV()) ; 
-            case 4: return dsLop.get(rowIndex).getTn().getLuuY(); 
+            case 0: return dsLop.get(rowIndex).getMalop();            
+            case 1: return dsLop.get(rowIndex).getTenlop(); 
+            case 2: return display(dsLop.get(rowIndex).getTn().getNgayTN());
+            case 3: return buildStudentString(dsLop.get(rowIndex).getTn().getListSV()) ;
+            case 4: return dsLop.get(rowIndex).getTn().getBuoi(); 
+             
+            case 5: return dsLop.get(rowIndex).getTn().getLuuY(); 
             default :return null;
         }
     }

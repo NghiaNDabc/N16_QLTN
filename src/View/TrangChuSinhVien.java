@@ -7,13 +7,13 @@ package View;
 import javax.swing.table.DefaultTableModel;
 import Models.Lop;
 import Models.SinhVien;
-import Models.SinhVienLop;
+import Models.TrucNhatLop;
 import Models.TrucNhat;
 
 import Controller.MultiLineTableCellRenderer;
 import Controller.TableChiTiet;
 import Controller.TableTrangChu;
-import Controller.TableTrangChu1;
+import Controller.TableTrangChuSinhVien;
 import Models.FileTXT.ReadWriteList;
 import View.DangNhap;
 import java.awt.Color;
@@ -88,8 +88,8 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
     String data_listLop = "CSDL_txt\\data_listLop.txt";
  String data_listTrucNhat = "CSDL_txt\\data_listTrucNhat.txt";
  ArrayList<ArrayList<TrucNhat>> allListTrucNhat=new ArrayList<>();
-    ArrayList<SinhVienLop> newList = new ArrayList<SinhVienLop>();
-    TableTrangChu1 model;
+    ArrayList<TrucNhatLop> newList = new ArrayList<TrucNhatLop>();
+    TableTrangChuSinhVien model;
 
     
   void readListLop() {
@@ -323,18 +323,15 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
     public void loadTableTrangChu(String MaSV) {
         
         try {
-        
             for (ArrayList<TrucNhat> arrayList : allListTrucNhat) {
-              
             for (TrucNhat trucNhat : arrayList) {
-             
                 if (trucNhat.getListSV().contains(new SinhVien(MaSV)) ) {
-                                SinhVienLop b = new SinhVienLop(trucNhat, trucNhat.getLop().getTenLop());
+                                TrucNhatLop b = new TrucNhatLop(trucNhat, trucNhat.getLop().getTenLop(), trucNhat.getLop().getMaLop());
                                 newList.add(b);
           }
         }
             }
-        tblLopTrucNhat.setModel(new TableTrangChu1(newList));
+        tblLopTrucNhat.setModel(new TableTrangChuSinhVien(newList));
         tblLopTrucNhat.getColumnModel().getColumn(3).setCellRenderer(new MultiLineTableCellRenderer());
         }
         catch(Exception ex){
@@ -346,9 +343,7 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
     private void btnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {
 
     }
-    public void reloadTable() {
-        tblLopTrucNhat.setModel(new TableTrangChu1(newList));
-    }
+    
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
         DangNhap a = new DangNhap();
         a.setVisible(true);
@@ -357,11 +352,11 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
 
     private void btnTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimKiemActionPerformed
         // TODO add your handling code here:
-        String TimKiem = txtTimKiem.getText().toString().toLowerCase();
+        String TimKiem = txtTimKiem.getText().toString();
         if (TimKiem.isEmpty() == false) {
 //            String regex = ".*" + Pattern.quote(TimKiem) + ".*";
-            ArrayList<SinhVienLop> searchedLop = new ArrayList<>();
-            for (SinhVienLop svl : newList) {
+            ArrayList<TrucNhatLop> searchedLop = new ArrayList<>();
+            for (TrucNhatLop svl : newList) {
 
                 if (svl.getTenlop().toLowerCase().contains(TimKiem.toLowerCase())) {
                   
@@ -370,7 +365,7 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
             }
             DefaultTableModel newModel = new DefaultTableModel();
             tblLopTrucNhat.setModel(newModel);
-            tblLopTrucNhat.setModel(new TableTrangChu1(searchedLop));
+            tblLopTrucNhat.setModel(new TableTrangChuSinhVien(searchedLop));
             tblLopTrucNhat.getColumnModel().getColumn(3).setCellRenderer(new MultiLineTableCellRenderer());
         }
     }//GEN-LAST:event_btnTimKiemActionPerformed
@@ -379,7 +374,7 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
         // TODO add your handling code here:
         DefaultTableModel newModel = new DefaultTableModel();
         tblLopTrucNhat.setModel(newModel);
-        tblLopTrucNhat.setModel(new TableTrangChu1(newList));
+        tblLopTrucNhat.setModel(new TableTrangChuSinhVien(newList));
         tblLopTrucNhat.getColumnModel().getColumn(3).setCellRenderer(new MultiLineTableCellRenderer());
     }//GEN-LAST:event_ReloadActionPerformed
 

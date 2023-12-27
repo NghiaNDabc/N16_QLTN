@@ -516,14 +516,16 @@ public class TrangChu extends javax.swing.JFrame {
     
     private void openFileChooser() {
         
-        JFileChooser fileChooser = new JFileChooser();
+         JFileChooser fileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files (*.xlsx)", "xlsx");
         fileChooser.setFileFilter(filter);
-        fileChooser.showOpenDialog(null);
-
+        int result =fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
         // Lấy đường dẫn của tệp đã chọn
         String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
         txtChonFile.setText(selectedFilePath);
+        } 
+       
         
     }
 
@@ -884,7 +886,7 @@ public class TrangChu extends javax.swing.JFrame {
                 xoaSVTheoMaLop(selectedMaLop);
                 writeListTatCaSinhVien();
                 writeListLop();
-                JOptionPane.showMessageDialog(TrangChu.this, "Thành công!", "Thông báo", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(TrangChu.this, "Xóa thành công!", "Thông báo", JOptionPane.PLAIN_MESSAGE);
                 loadTableTrangChu();
             }
              System.out.println("Xóa thành công");
