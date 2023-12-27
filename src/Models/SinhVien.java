@@ -18,6 +18,10 @@ public class SinhVien implements Serializable{
         this.maSV = maSinhVien;
         this.hoTen = hoTen;
     }
+       public SinhVien(String maSinhVien) {
+        this.maSV = maSinhVien;
+     
+    }
 
    
     public void setMaSV(String maSV) {

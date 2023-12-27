@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import View.ChiTietQLTN;
-import Controller.DataSingleton;
 import Controller.TableTrangChu;
-import Models.FileTXT.FileListLop;
+
+import Models.FileTXT.ReadWriteList;
 import View.DangNhap;
 import javax.swing.ImageIcon;
 import java.awt.Image;
@@ -47,10 +47,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ChiTietQLTN extends javax.swing.JFrame {
 
     ArrayList<Lop> listLop = new ArrayList<>();
-    FileListLop fileListLop = new FileListLop();
+    ReadWriteList fileListLop = new ReadWriteList();
+    ReadWriteList fileListTrucNhat=new ReadWriteList();
     String data_listLop = "CSDL_txt\\data_listLop.txt";
- 
+ String data_listTrucNhat = "CSDL_txt\\data_listTrucNhat.txt";
+ ArrayList<ArrayList<TrucNhat>> allListTrucNhat=new ArrayList<>();
     
+    ArrayList<TrucNhat> listtrucnhat=new ArrayList<>();
+    
+   
+    TableChiTiet model;
     //hàm này lấy listLop từ txt, m làm hàm ghi tất cả trực nhật vào txt rồi sang trang sinh viên đọc txt là xong
     // nhớ implemt
     void readListLop() {
@@ -60,11 +66,29 @@ public class ChiTietQLTN extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+        void readListTrucNhat() {
+            
+        try {
+            this.allListTrucNhat = fileListTrucNhat.ReadObject(data_listTrucNhat);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+         public void writeListTrucNhat(){
+            
+        try {
+            fileListTrucNhat.WriteObject(data_listTrucNhat, allListTrucNhat);
+          
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(ChiTietQLTN.this, "Lỗi ghi truc nhat!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     
-    DataSingleton dataSingleton = DataSingleton.getInstance();
-    ArrayList<TrucNhat>[] allTrucNhatArrays = dataSingleton.getAllDanhSachTrucNhatArray();
-    ArrayList<TrucNhat> listtrucnhat;
-    TableChiTiet model;
+
+    
+  
 
     public ChiTietQLTN() {
 
@@ -72,7 +96,10 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
     public ChiTietQLTN(String classID, int selectedRow, TrangChu This) {
         initComponents();
-        ganlist(selectedRow);
+       
+        readListLop();
+        readListTrucNhat() ;
+          listtrucnhat=ganlist(classID);
         displaytable(classID, selectedRow);
         btnChia.addActionListener(new ActionListener() {
             @Override
@@ -81,6 +108,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
                 if (listtrucnhat.isEmpty()) {
                     chiatrucnhat(classID);
+                      writeListTrucNhat();
                     displaytable(classID, selectedRow);
                 } else {
                     JOptionPane.showMessageDialog(ChiTietQLTN.this, "Bạn đã chia trực nhật");
@@ -88,7 +116,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
             }
         });
-        readListLop();
+        
         xoa(classID);
         SuaChiTiet(classID, selectedRow);
         Sua();
@@ -96,8 +124,13 @@ public class ChiTietQLTN extends javax.swing.JFrame {
     }
     //chia se du lieu
 
-    public void ganlist(int selectedRow) {
-        listtrucnhat = dataSingleton.getDanhSachTN(selectedRow);
+    public ArrayList ganlist(String classID) {
+     for(ArrayList<TrucNhat> tn :allListTrucNhat){
+         if(tn.get(0).getLop().getMaLop().equals(classID)){
+             return tn;
+         }
+     }
+     return new ArrayList<TrucNhat>();
     }
 
     public Lop findClassByID(String classID) {
@@ -109,7 +142,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
         }
         return null; // Trả về null nếu không tìm thấy
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -508,7 +541,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     public void displaytable(String classID, int selectedRow) {
 //        tableChiTiet.setModel();
-
+           
         try {
             txtMaLop.setText(findClassByID(classID).getMaLop());
             txtTenLop.setText(findClassByID(classID).getTenLop());
@@ -525,7 +558,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
     }
 
     public void chiatrucnhat(String classID) {
-
+ArrayList<TrucNhat> list = new ArrayList<>();
         Date ngay = findClassByID(classID).getNgayBD();
         //System.out.println(ngay);
         String luuy = "";
@@ -554,13 +587,16 @@ public class ChiTietQLTN extends javax.swing.JFrame {
             } else {
                 them = new TrucNhat(i + 1, calendar.getTime(), list1buoi, luuy, findClassByID(classID));
             }
-
             // Thêm danh sách sinh viên trực nhật vào danh sách lịch
-            listtrucnhat.add(them);
+        
+         list.add(them);
             ngay = calendar.getTime();
             startIndex = endIndex;
 
         }
+          listtrucnhat=list;
+          
+          allListTrucNhat.add(list);
     }
 
     public void btnTimKiem() {
@@ -598,6 +634,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
                         model.removeStudentAt(selectedRow);
                         findClassByID(classID).setSoBuoiHoc(findClassByID(classID).getSoBuoiHoc() - 1);
                         JOptionPane.showMessageDialog(ChiTietQLTN.this, "Xóa thành công!");
+                                              writeListTrucNhat();
                     }
                 } else {
                     JOptionPane.showMessageDialog(ChiTietQLTN.this, "Vui lòng chọn một buổi trực nhật để xóa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
@@ -669,7 +706,8 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
             tn.setLuuY(luuYField.getText());
             model.fireTableDataChanged(); // Cập nhật toàn bộ bảng
-            JOptionPane.showMessageDialog(ChiTietQLTN.this, "Sửa thành công!");
+    
+             writeListTrucNhat();
         }
     }
 
@@ -772,7 +810,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
     private void btnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTrangChuActionPerformed
         // TODO add your handling code here:
-        System.out.println("dfdsf");
+        
     }//GEN-LAST:event_btnTrangChuActionPerformed
 
     private void btnChiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChiaActionPerformed
@@ -826,7 +864,7 @@ public class ChiTietQLTN extends javax.swing.JFrame {
 
                 try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
                     workbook.write(outputStream);
-                    System.out.println("Xuất Excel thành công!");
+                   JOptionPane.showMessageDialog(ChiTietQLTN.this, "Xuất File thành công !");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

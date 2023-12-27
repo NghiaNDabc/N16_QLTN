@@ -9,12 +9,12 @@ import Models.Lop;
 import Models.SinhVien;
 import Models.SinhVienLop;
 import Models.TrucNhat;
-import Controller.DataSingleton;
+
 import Controller.MultiLineTableCellRenderer;
 import Controller.TableChiTiet;
 import Controller.TableTrangChu;
 import Controller.TableTrangChu1;
-import Models.FileTXT.FileListLop;
+import Models.FileTXT.ReadWriteList;
 import View.DangNhap;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -71,31 +71,47 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
      */
     public TrangChuSinhVien(String MaSV) {
         initComponents();
+        System.out.println("test"+MaSV);
+          readListLop();
+        readListTrucNhat() ;
         loadTableTrangChu(MaSV);
         //lấy listLop
-        readListLop();
+      
     }
 
     public TrangChuSinhVien() {
 
     }
-    ArrayList<Lop> listLop = new ArrayList<>();
-    FileListLop fileListLop = new FileListLop();
+   ArrayList<Lop> listLop = new ArrayList<>();
+    ReadWriteList fileListLop = new ReadWriteList();
+    ReadWriteList fileListTrucNhat=new ReadWriteList();
     String data_listLop = "CSDL_txt\\data_listLop.txt";
-    DataSingleton dataSingleton = DataSingleton.getInstance();
-   // ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
-    ArrayList<TrucNhat>[] allTN = dataSingleton.getAllDanhSachTrucNhatArray();
+ String data_listTrucNhat = "CSDL_txt\\data_listTrucNhat.txt";
+ ArrayList<ArrayList<TrucNhat>> allListTrucNhat=new ArrayList<>();
     ArrayList<SinhVienLop> newList = new ArrayList<SinhVienLop>();
     TableTrangChu1 model;
 
     
-    void readListLop() {
+  void readListLop() {
         try {
             this.listLop = fileListLop.ReadObject(data_listLop);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+        void readListTrucNhat() {
+            
+        try {
+            this.allListTrucNhat = fileListTrucNhat.ReadObject(data_listTrucNhat);
+            
+        } catch (Exception e) {
+            System.out.print("Loi doc file tat ca truc nhat");
+        }
+    }
+             
+         public void displayTable(){
+             
+         }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -305,19 +321,19 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
 
     // lấy ra các lớp của sinh viên đã đăng nhập
     public void loadTableTrangChu(String MaSV) {
+        
         try {
-            for (ArrayList<TrucNhat> arrayList : allTN) {
+        
+            for (ArrayList<TrucNhat> arrayList : allListTrucNhat) {
+              
             for (TrucNhat trucNhat : arrayList) {
-                for (SinhVien a : trucNhat.getListSV()) {
-                            if (a.getMaSV().equals(MaSV) ) {
+             
+                if (trucNhat.getListSV().contains(new SinhVien(MaSV)) ) {
                                 SinhVienLop b = new SinhVienLop(trucNhat, trucNhat.getLop().getTenLop());
                                 newList.add(b);
-                            }
-                }
-
-            }
-
+          }
         }
+            }
         tblLopTrucNhat.setModel(new TableTrangChu1(newList));
         tblLopTrucNhat.getColumnModel().getColumn(3).setCellRenderer(new MultiLineTableCellRenderer());
         }
@@ -330,7 +346,6 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
     private void btnTrangChuActionPerformed(java.awt.event.ActionEvent evt) {
 
     }
-
     public void reloadTable() {
         tblLopTrucNhat.setModel(new TableTrangChu1(newList));
     }
@@ -349,7 +364,7 @@ public class TrangChuSinhVien extends javax.swing.JFrame {
             for (SinhVienLop svl : newList) {
 
                 if (svl.getTenlop().toLowerCase().contains(TimKiem.toLowerCase())) {
-                    System.out.println(svl.getTenlop());
+                  
                     searchedLop.add(svl);
                 }
             }

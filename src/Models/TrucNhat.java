@@ -4,11 +4,12 @@
  */
 package Models;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TrucNhat {
+public class TrucNhat implements Serializable{
     private Lop lop;
     private Date ngayTN;
     private String luuY;

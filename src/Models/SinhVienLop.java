@@ -4,13 +4,14 @@
  */
 package Models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author pc
  */
-public class SinhVienLop {
+public class SinhVienLop implements Serializable {
     private TrucNhat tn;
     private String Tenlop;
     private String Malop;

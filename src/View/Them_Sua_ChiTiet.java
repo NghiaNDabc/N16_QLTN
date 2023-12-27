@@ -4,8 +4,9 @@ import Models.Lop;
 import Models.SinhVien;
 import Models.TrucNhat;
 import View.ChiTietQLTN;
-import Controller.DataSingleton;
+
 import Controller.TableSinhVienTN;
+import Models.FileTXT.ReadWriteList;
 import View.DangNhap;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,20 +56,55 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
 
     Them_Sua_ChiTiet(String classID, int buoi, int selectedRow, ChiTietQLTN This) {
         initComponents();
-        ganlist(selectedRow);
+          readListLop();
+        readListTrucNhat() ;
+        ganlist(classID);
         display(classID, buoi, selectedRow);
         themSVTN(classID, buoi);
         suaSVTN(classID, buoi);
         xoa();
     }
+    ArrayList<Lop> listLop = new ArrayList<>();
+    ReadWriteList fileListLop = new ReadWriteList();
+    ReadWriteList fileListTrucNhat = new ReadWriteList();
+    String data_listLop = "CSDL_txt\\data_listLop.txt";
+    String data_listTrucNhat = "CSDL_txt\\data_listTrucNhat.txt";
+ ArrayList<ArrayList<TrucNhat>> allListTrucNhat=new ArrayList<>();
+    void readListLop() {
+        try {
+            this.listLop = fileListLop.ReadObject(data_listLop);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    DataSingleton dataSingleton = DataSingleton.getInstance();
-    ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
-    ArrayList<TrucNhat>[] allTrucNhatArrays = dataSingleton.getAllDanhSachTrucNhatArray();
-    ArrayList<TrucNhat> listtrucnhat;
+     void readListTrucNhat() {
+            
+        try {
+            this.allListTrucNhat = fileListTrucNhat.ReadObject(data_listTrucNhat);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+         public void writeListTrucNhat(){
+            
+        try {
+            fileListTrucNhat.WriteObject(data_listTrucNhat, allListTrucNhat);
+          
+        } 
+        catch (Exception e) {
+            JOptionPane.showMessageDialog(Them_Sua_ChiTiet.this, "Lỗi ghi truc nhat!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-    public void ganlist(int selectedRow) {
-        listtrucnhat = dataSingleton.getDanhSachTN(selectedRow);
+   public ArrayList<TrucNhat> ganlist(String classID) {
+     for(ArrayList<TrucNhat> tn :allListTrucNhat){
+         if(tn.get(0).getLop().getMaLop().equals(classID)){
+             return tn;
+         }
+     }
+     return new ArrayList<TrucNhat>();
     }
 
     public Lop findClassByID(String classID) {
@@ -81,9 +117,11 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
         return null; // Trả về null nếu không tìm thấy
     }
 
-    public TrucNhat findTNByBuoi(int buoi) {
+    public TrucNhat findTNByBuoi(int buoi,String classID) {
+      
         // Tìm kiếm lớp trong danh sách dựa trên mã lớp
-        for (TrucNhat tn : listtrucnhat) {
+        for (TrucNhat tn : ganlist(classID)) {
+         
             if (tn.getBuoi() == buoi) {
                 return tn;
             }
@@ -92,9 +130,9 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
     }
 
     public void display(String classID, int buoi, int selectedRow) {
-        ngaytn.setText(findTNByBuoi(buoi).display(findTNByBuoi(buoi).getNgayTN())); //ke thua
-        luuy.setText(findTNByBuoi(buoi).getLuuY());
-        model = new TableSinhVienTN(findTNByBuoi(buoi).getListSV());
+        ngaytn.setText(findTNByBuoi(buoi,classID).display(findTNByBuoi(buoi,classID).getNgayTN())); //ke thua
+        luuy.setText(findTNByBuoi(buoi,classID).getLuuY());
+        model = new TableSinhVienTN(findTNByBuoi(buoi,classID).getListSV());
         trucnhat.setModel(model);
         clickback(classID, selectedRow);
     }
@@ -118,6 +156,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Hiển thị cửa sổ dialog để nhập thông tin sinh viên mới
                 showAddSinhVienDialog(classID, buoi);
+                writeListTrucNhat();
             }
         });
 //cap nhat lai vao csdl
@@ -173,7 +212,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
 
                     // Thêm sinh viên vào danh sách sinh viên trực nhật
                     try {
-                        if (checkthem(maSinhVien, buoi)) {
+                        if (checkthem(maSinhVien, buoi,classID)) {
                             throw new Exception("Mã sinh viên đã tồn tại.");
                         }
                         model.addStudent(new SinhVien(maSinhVien, hoTen));
@@ -187,7 +226,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
                                 Object newValue = trucnhat.getValueAt(row, column);
                                 // Cập nhật dữ liệu vào mô hình (EditableTableModel) hoặc thực hiện hành động cần thiết
                                 model.setValueAt(newValue, row, column);
-                               // System.out.println("Updated value: " + newValue);
+                                // System.out.println("Updated value: " + newValue);
                             }
                         });
                     } catch (Exception ex) {
@@ -225,9 +264,9 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
         dialog.setVisible(true);
     }
 
-    private boolean checkthem(String maSinhVien, int buoi) {
+    private boolean checkthem(String maSinhVien, int buoi,String classID) {
 
-        for (SinhVien sv : findTNByBuoi(buoi).getListSV()) {
+        for (SinhVien sv : findTNByBuoi(buoi,classID).getListSV()) {
             if (sv.getMaSV().equals(maSinhVien)) {
                 return true; // Mã sinh viên đã tồn tại
             }
@@ -326,7 +365,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
 
                     // Thêm sinh viên vào danh sách sinh viên trực nhật
                     try {
-                        if (checkthem(maSinhVien, buoi)) {
+                        if (checkthem(maSinhVien, buoi,classID)) {
                             throw new Exception(" sinh viên này đang được trực nhật.");
                         }
                         //cap nhat csdl
@@ -342,7 +381,8 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
                                 Object newValue = trucnhat.getValueAt(row, column);
                                 // Cập nhật dữ liệu vào mô hình (EditableTableModel) hoặc thực hiện hành động cần thiết
                                 model.setValueAt(newValue, row, column);
-                               // System.out.println("Updated value: " + newValue);
+                                // System.out.println("Updated value: " + newValue);
+                                writeListTrucNhat();// ghi vao file
                             }
                         });
                     } catch (Exception ex) {
@@ -394,6 +434,7 @@ public class Them_Sua_ChiTiet extends javax.swing.JFrame {
 
                     if (confirmResult == JOptionPane.OK_OPTION) {
                         model.removeStudentAt(selectedRow);
+                        writeListTrucNhat();
                     }
                 } else {
                     JOptionPane.showMessageDialog(Them_Sua_ChiTiet.this, "Vui lòng chọn một sinh viên để xóa.", "Thông báo", JOptionPane.WARNING_MESSAGE);

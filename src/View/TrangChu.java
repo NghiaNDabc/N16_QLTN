@@ -3,13 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package View;
-import Models.FileTXT.FileListSinhVien;
-import Models.FileTXT.FileListLop;
+
 import javax.swing.table.DefaultTableModel;
 import Models.Lop;
 import Models.SinhVien;
-import Controller.DataSingleton;
+
 import Controller.TableTrangChu;
+import Models.FileTXT.ReadWriteList;
 import View.DangNhap;
 import java.awt.Color;
 import java.awt.HeadlessException;
@@ -60,12 +60,12 @@ import javax.swing.ImageIcon;
 public class TrangChu extends javax.swing.JFrame {
  ArrayList<SinhVien> listTatCaSinhVien = new ArrayList<>();
     
-    DataSingleton dataSingleton = DataSingleton.getInstance();
+ 
     
-    ArrayList<Lop> listLop = dataSingleton.getDanhSachLop();
+    ArrayList<Lop> listLop=new ArrayList<>(); ;
     
-    FileListSinhVien fileListTatCaSv = new FileListSinhVien();
-    FileListLop fileListLop = new FileListLop();
+    ReadWriteList fileListTatCaSv = new ReadWriteList();
+    ReadWriteList fileListLop = new ReadWriteList();
     String data_listTatCaSinhVien =  "CSDL_txt\\data_listTatCaSinhVien.txt";
     String data_listLop =  "CSDL_txt\\data_listLop.txt";
     /**
