@@ -578,10 +578,10 @@ ArrayList<TrucNhat> list = new ArrayList<>();
                 list1buoi = new ArrayList<>(list1buoi.subList(0, 5));
                 
             }
-            else {
-                JOptionPane.showMessageDialog(this, "Số lượng sinh viên quá ít", "Thông báo", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+//            else {
+//                JOptionPane.showMessageDialog(this, "Số lượng sinh viên quá ít", "Thông báo", JOptionPane.ERROR_MESSAGE);
+//                return;
+//            }
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(ngay);
             calendar.add(Calendar.DAY_OF_YEAR, 7);
